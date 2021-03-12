@@ -182,10 +182,10 @@ const GenericTemplate: React.FC<GenericTemplateProps> = ({
 						</Typography>
 						{children}
 					</Container>
-					<div className={classes.copyRight}>
-						<Copyright />
-					</div>
 				</main>
+				<div className={classes.copyRight}>
+					<Copyright />
+				</div>
 			</div>
 		</ThemeProvider>
 	)
