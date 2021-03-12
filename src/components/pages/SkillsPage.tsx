@@ -1,54 +1,97 @@
 import * as React from 'react'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
+import { makeStyles } from '@material-ui/core/styles'
+import TreeView from '@material-ui/lab/TreeView'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import TreeItem from '@material-ui/lab/TreeItem'
 import GenericTemplate from '../templates/GenericTemplate'
 
 interface SkillsPageProps {
 	children?: React.ReactChild
 }
+interface RenderTree {
+	id: string
+	name: string
+	children?: RenderTree[]
+}
+
+const data: RenderTree[] = [
+	{
+		id: 'frontend',
+		name: 'Frontend',
+		children: [
+			{
+				id: '1',
+				name: 'HTML',
+			},
+			{
+				id: '2',
+				name: 'CSS',
+			},
+			{
+				id: '3',
+				name: 'JavaScript',
+			},
+		],
+	},
+	{
+		id: 'backend',
+		name: 'Backend',
+		children: [
+			{
+				id: '1',
+				name: 'PHP',
+			},
+			{
+				id: '2',
+				name: 'Python',
+			},
+			{
+				id: '3',
+				name: 'SQL',
+			},
+		],
+	},
+	{
+		id: 'devOps',
+		name: 'DevOps',
+		children: [
+			{
+				id: '1',
+				name: 'AWS',
+			},
+		],
+	},
+]
+
+const useStyles = makeStyles({
+	root: {
+		height: 110,
+		flexGrow: 1,
+		maxWidth: 400,
+	},
+})
 
 const SkillsPage: React.FC<SkillsPageProps> = () => {
+	const classes = useStyles()
+
+	const renderTree = (category: RenderTree) => (
+		<TreeItem key={category.id} nodeId={category.id} label={category.name}>
+			{Array.isArray(category.children)
+				? category.children.map((skill) => renderTree(skill))
+				: null}
+		</TreeItem>
+	)
+
 	return (
 		<>
 			<GenericTemplate title="Skills">
-				<List>
-					<React.Fragment key="1">
-						<ListItem divider={true}>
-							<ListItemText primary="HTML" />
-						</ListItem>
-					</React.Fragment>
-					<React.Fragment key="2">
-						<ListItem divider={true}>
-							<ListItemText primary="CSS" />
-						</ListItem>
-					</React.Fragment>
-					<React.Fragment key="3">
-						<ListItem divider={true}>
-							<ListItemText primary="JavaScript" />
-						</ListItem>
-					</React.Fragment>
-					<React.Fragment key="4">
-						<ListItem divider={true}>
-							<ListItemText primary="PHP" />
-						</ListItem>
-					</React.Fragment>
-					<React.Fragment key="5">
-						<ListItem divider={true}>
-							<ListItemText primary="Python" />
-						</ListItem>
-					</React.Fragment>
-					<React.Fragment key="6">
-						<ListItem divider={true}>
-							<ListItemText primary="SQL" />
-						</ListItem>
-					</React.Fragment>
-					<React.Fragment key="7">
-						<ListItem divider={true}>
-							<ListItemText primary="AWS" />
-						</ListItem>
-					</React.Fragment>
-				</List>
+				<TreeView
+					className={classes.root}
+					defaultCollapseIcon={<ExpandMoreIcon />}
+					defaultExpandIcon={<ChevronRightIcon />}>
+					{data.map((category) => renderTree(category))}
+				</TreeView>
 			</GenericTemplate>
 		</>
 	)

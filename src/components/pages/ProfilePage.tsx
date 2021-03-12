@@ -1,5 +1,4 @@
 import * as React from 'react'
-import Divider from '@material-ui/core/Divider'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -47,7 +46,6 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
 											primary={`${item.label}： ${item.val}`}
 										/>
 									</ListItem>
-									<Divider />
 								</React.Fragment>
 							)
 						})}
