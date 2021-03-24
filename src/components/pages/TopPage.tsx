@@ -1,33 +1,24 @@
 import * as React from 'react'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
+import Typography from '@material-ui/core/Typography'
 import GenericTemplate from '../templates/GenericTemplate'
-
-const top = [
-	'ここはKohei Takahashiのポートフォリオサイトです。',
-	'私のプロフィールやスキル、やってみたことをまとめています。',
-	'まだまだ発展途上のサイトですので今後ブラッシュアップしていきます。',
-]
 
 class TopPage extends React.Component {
 	render() {
 		return (
 			<>
 				<GenericTemplate title="Top">
-					<List>
-						{top &&
-							top.length > 0 &&
-							top.map((item, index) => {
-								return (
-									<React.Fragment key={index}>
-										<ListItem divider={true}>
-											<ListItemText primary={item} />
-										</ListItem>
-									</React.Fragment>
-								)
-							})}
-					</List>
+					<Typography
+						component="h2"
+						variant="h5"
+						color="inherit"
+						noWrap>
+						<br />
+						ここはKohei Takahashiのポートフォリオサイトです。
+						<br />
+						私のプロフィールやスキル、やってみたことをまとめています。
+						<br />
+						まだまだ発展途上のサイトですので今後ブラッシュアップしていきます。
+					</Typography>
 				</GenericTemplate>
 			</>
 		)

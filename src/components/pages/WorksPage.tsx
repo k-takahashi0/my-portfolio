@@ -1,10 +1,13 @@
 import * as React from 'react'
 import axios from 'axios'
+import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
+import Typography from '@material-ui/core/Typography'
+import Chip from '@material-ui/core/Chip'
 import GenericTemplate from '../templates/GenericTemplate'
 
 interface WorksPageProps {
@@ -13,7 +16,23 @@ interface WorksPageProps {
 type SearchString = string
 type SearchResult = book.Items[] | null
 
+const useStyles = makeStyles({
+	title: {
+		marginTop: 40,
+		marginBottom: 20,
+	},
+	searchText: {
+		marginLeft: 15,
+	},
+	result: {
+		marginTop: 20,
+		marginLeft: 5,
+	},
+})
+
 const WorksPage: React.FC<WorksPageProps> = () => {
+	const classes = useStyles()
+
 	const [searchString, changeSearchString] = React.useState<SearchString>('')
 	const [searchResult, changeSearchResult] = React.useState<SearchResult>(
 		null
@@ -36,12 +55,25 @@ const WorksPage: React.FC<WorksPageProps> = () => {
 	return (
 		<>
 			<GenericTemplate title="Works">
+				<Typography
+					component="h2"
+					variant="h6"
+					color="inherit"
+					noWrap
+					className={classes.title}>
+					1. GoogleのAPIを用いて書籍検索をやってみた
+					<div id="tag">
+						<Chip label="React" />
+						<Chip label="TypeScript" />
+					</div>
+				</Typography>
 				<TextField
 					onChange={(
 						event: React.ChangeEvent<
 							HTMLInputElement | HTMLTextAreaElement
 						>
 					) => changeSearchString(event.target.value)}
+					className={classes.searchText}
 				/>
 				<Button
 					variant="contained"
@@ -51,21 +83,29 @@ const WorksPage: React.FC<WorksPageProps> = () => {
 					disabled={!searchString}>
 					書籍検索
 				</Button>
-				<List>
-					{searchResult &&
-						searchResult.length > 0 &&
-						searchResult.map((item: book.Items) => {
-							return (
-								<React.Fragment key={item.id}>
-									<ListItem divider={true}>
-										<ListItemText
-											primary={item.volumeInfo.title}
-										/>
-									</ListItem>
-								</React.Fragment>
-							)
-						})}
-				</List>
+				<div id="result">
+					<Typography
+						component="h2"
+						variant="h6"
+						color="inherit"
+						noWrap
+						className={classes.result}></Typography>
+					<List>
+						{searchResult &&
+							searchResult.length > 0 &&
+							searchResult.map((item: book.Items) => {
+								return (
+									<React.Fragment key={item.id}>
+										<ListItem divider={true}>
+											<ListItemText
+												primary={item.volumeInfo.title}
+											/>
+										</ListItem>
+									</React.Fragment>
+								)
+							})}
+					</List>
+				</div>
 			</GenericTemplate>
 		</>
 	)

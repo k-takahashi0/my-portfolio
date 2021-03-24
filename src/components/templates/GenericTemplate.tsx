@@ -1,21 +1,29 @@
 import React from 'react'
-import { createMuiTheme } from '@material-ui/core/styles'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
+import {
+	makeStyles,
+	createStyles,
+	createMuiTheme,
+	Theme,
+} from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import List from '@material-ui/core/List'
-import Typography from '@material-ui/core/Typography'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import Drawer from '@material-ui/core/Drawer'
 import Container from '@material-ui/core/Container'
-import { Link } from 'react-router-dom'
+import Typography from '@material-ui/core/Typography'
+import MenuIcon from '@material-ui/icons/Menu'
+import IconButton from '@material-ui/core/IconButton'
 import HomeIcon from '@material-ui/icons/Home'
 import PersonIcon from '@material-ui/icons/Person'
 import BuildIcon from '@material-ui/icons/Build'
 import WorkIcon from '@material-ui/icons/Work'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
+
+import { Link } from 'react-router-dom'
 
 const theme = createMuiTheme({
 	typography: {
@@ -41,56 +49,37 @@ const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		root: {
 			display: 'flex',
-		},
-		toolbar: {
-			paddingRight: 24,
+			flexDirection: 'column',
+			minHeight: '100vh',
 		},
 		appBar: {
-			zIndex: theme.zIndex.drawer + 1,
-			transition: theme.transitions.create(['width', 'margin'], {
-				easing: theme.transitions.easing.sharp,
-				duration: theme.transitions.duration.leavingScreen,
-			}),
 			backgroundColor: '#bdd4a7f2',
 			color: '#000',
 		},
-		title: {
-			flexGrow: 1,
+		menuButton: {
+			marginLeft: -12,
+			marginRight: 20,
 		},
-		pageTitle: {
-			marginBottom: theme.spacing(1),
-		},
-		appBarSpacer: theme.mixins.toolbar,
-		content: {
-			flexGrow: 9,
-			height: '100vh',
-			overflow: 'auto',
-			position: 'relative',
-			backgroundColor: '#f2f3cb',
-			flexBasis: '10px',
-		},
-		container: {
-			paddingTop: theme.spacing(4),
-			paddingBottom: theme.spacing(4),
+		list: {
+			width: 150,
 		},
 		link: {
 			textDecoration: 'none',
 			color: theme.palette.text.secondary,
 		},
-		copyRight: {
-			position: 'absolute',
-			bottom: '20px',
-			left: '45.5%',
+		content: {
+			flex: 1,
+			backgroundColor: '#f2f3cb',
 		},
-		list: {
-			marginTop: '17px',
+		appBarSpacer: theme.mixins.toolbar,
+		container: {
+			paddingTop: theme.spacing(4),
+			paddingBottom: theme.spacing(4),
 		},
-		menu: {
-			flexGrow: 1,
-			height: '100vh',
-			overflow: 'auto',
-			flexBasis: '10px',
-			backgroundColor: '#edf572',
+		footer: {
+			backgroundColor: '#bdd4a7f2',
+			color: '#000',
+			marginTop: 'auto',
 		},
 	})
 )
@@ -109,66 +98,109 @@ export interface GenericTemplateProps {
 	children?: React.ReactNode
 	title: string
 }
-
 const GenericTemplate: React.FC<GenericTemplateProps> = ({
 	children,
 	title,
 }) => {
 	const classes = useStyles()
+	type State = {
+		['left']: boolean
+	}
+	const [state, setState] = React.useState<State>({
+		['left']: false,
+	})
+	const toggleDrawer = (anchor: 'left', open: boolean) => (
+		event: React.KeyboardEvent | React.MouseEvent
+	) => {
+		if (
+			event &&
+			event.type === 'keydown' &&
+			((event as React.KeyboardEvent).key === 'Tab' ||
+				(event as React.KeyboardEvent).key === 'Shift')
+		) {
+			return
+		}
+		setState({ ...state, [anchor]: open })
+	}
 
 	return (
 		<ThemeProvider theme={theme}>
 			<div className={classes.root}>
 				<CssBaseline />
-				<AppBar position="absolute" className={classes.appBar}>
-					<Toolbar className={classes.toolbar}>
+				<AppBar
+					position="fixed"
+					color="inherit"
+					className={classes.appBar}>
+					<Toolbar>
+						<IconButton
+							className={classes.menuButton}
+							color="inherit"
+							aria-label="Menu"
+							onClick={toggleDrawer('left', true)}>
+							<MenuIcon />
+						</IconButton>
+						<Drawer
+							anchor="left"
+							open={state.left}
+							onClose={toggleDrawer('left', false)}>
+							<div
+								tabIndex={0}
+								role="presentation"
+								onClick={toggleDrawer('left', false)}
+								onKeyDown={toggleDrawer('left', false)}>
+								<div className={classes.list}>
+									<List>
+										<Link to="/" className={classes.link}>
+											<ListItem button>
+												<ListItemIcon>
+													<HomeIcon />
+												</ListItemIcon>
+												<ListItemText primary="Top" />
+											</ListItem>
+										</Link>
+										<Link
+											to="/profile"
+											className={classes.link}>
+											<ListItem button>
+												<ListItemIcon>
+													<PersonIcon />
+												</ListItemIcon>
+												<ListItemText primary="Profile" />
+											</ListItem>
+										</Link>
+										<Link
+											to="/skills"
+											className={classes.link}>
+											<ListItem button>
+												<ListItemIcon>
+													<BuildIcon />
+												</ListItemIcon>
+												<ListItemText primary="Skills" />
+											</ListItem>
+										</Link>
+										<Link
+											to="/works"
+											className={classes.link}>
+											<ListItem button>
+												<ListItemIcon>
+													<WorkIcon />
+												</ListItemIcon>
+												<ListItemText primary="Works" />
+											</ListItem>
+										</Link>
+									</List>
+								</div>
+							</div>
+						</Drawer>{' '}
 						<Typography
 							component="h1"
 							variant="h6"
 							color="inherit"
-							noWrap
-							className={classes.title}>
+							noWrap>
 							Kohei Takahashiのポートフォリオサイトへようこそ！
 						</Typography>
 					</Toolbar>
 				</AppBar>
-				<div className={classes.menu}>
-					<div className={classes.appBarSpacer} />
-					<List className={classes.list}>
-						<Link to="/" className={classes.link}>
-							<ListItem button>
-								<ListItemIcon>
-									<HomeIcon />
-								</ListItemIcon>
-								<ListItemText primary="Top" />
-							</ListItem>
-						</Link>
-						<Link to="/profile" className={classes.link}>
-							<ListItem button>
-								<ListItemIcon>
-									<PersonIcon />
-								</ListItemIcon>
-								<ListItemText primary="Profile" />
-							</ListItem>
-						</Link>
-						<Link to="/skills" className={classes.link}>
-							<ListItem button>
-								<ListItemIcon>
-									<BuildIcon />
-								</ListItemIcon>
-								<ListItemText primary="Skills" />
-							</ListItem>
-						</Link>
-						<Link to="/works" className={classes.link}>
-							<ListItem button>
-								<ListItemIcon>
-									<WorkIcon />
-								</ListItemIcon>
-								<ListItemText primary="Works" />
-							</ListItem>
-						</Link>
-					</List>
-				</div>
 				<main className={classes.content}>
 					<div className={classes.appBarSpacer} />
 					<Container maxWidth="lg" className={classes.container}>
@@ -176,16 +208,15 @@ const GenericTemplate: React.FC<GenericTemplateProps> = ({
 							component="h2"
 							variant="h5"
 							color="inherit"
-							noWrap
-							className={classes.pageTitle}>
+							noWrap>
 							{title}
 						</Typography>
 						{children}
 					</Container>
 				</main>
-				<div className={classes.copyRight}>
+				<footer className={classes.footer}>
 					<Copyright />
-				</div>
+				</footer>
 			</div>
 		</ThemeProvider>
 	)
